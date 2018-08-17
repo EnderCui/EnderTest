@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Service Country Configuration</value>
+    </caseValues>
+    <fields>
+        <help><!-- Add comma separated profile id&apos;s --></help>
+        <label><!-- Admin Profile Id --></label>
+        <name>AdminProfileId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Close Case Tab After Finish --></label>
+        <name>CloseCaseTabAfterFinish__c</name>
+    </fields>
+    <fields>
+        <help><!-- Communication Customer Sample Text --></help>
+        <label><!-- Communication Customer --></label>
+        <name>CommunicationCustomer__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Communication Customer) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Communication to Store --></label>
+        <name>CommunicationStore__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Communication to Store) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Communication Supplier Sample Text --></help>
+        <label><!-- Communication Supplier for Clarification --></label>
+        <name>CommunicationSupplierClarification__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Communication Supplier) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Communication Supplier --></label>
+        <name>CommunicationSupplier__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Communication Supplier) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Communication Supplier Notification Sample Text --></help>
+        <label><!-- Communication Supplier for Notification --></label>
+        <name>CommunicationSupplierforNotification__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Communication Supplier for Notification) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Max number of Contact maches compared to the input parameter. Default 10 --></help>
+        <label><!-- Contact Information Max Contact Matches --></label>
+        <name>ContactInformationMaxContactMatches__c</name>
+    </fields>
+    <fields>
+        <label><!-- Default Account --></label>
+        <name>DefaultAccount__c</name>
+        <relationshipLabel><!-- Service Country Configurations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Default Case Queue Developer Name --></label>
+        <name>DefaultCaseQueueDeveloperName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Follow Up Default Due Time --></label>
+        <name>FollowUpDefaultDueTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Follow Up Queue Developer Name --></label>
+        <name>FollowUpQueueDeveloperName__c</name>
+    </fields>
+    <fields>
+        <help><!-- Forward Buyer Sample Text --></help>
+        <label><!-- Forward Buyer --></label>
+        <name>ForwardBuyer__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Forward Buyer) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Forward Insurance Sample Text --></help>
+        <label><!-- Forward Insurance --></label>
+        <name>ForwardInsurance__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Forward Insurance) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Forward Others --></label>
+        <name>ForwardOthers__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Forward Others) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Forward QA --></label>
+        <name>ForwardQA__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Forward QA) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Forward RDC Contact --></label>
+        <name>ForwardRDCContact__c</name>
+        <relationshipLabel><!-- Service Country Configurations --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Forward RDC Sample Text --></help>
+        <label><!-- Forward RDC --></label>
+        <name>ForwardRDC__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Forward RDC) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- InsuranceContact --></label>
+        <name>InsuranceContact__c</name>
+        <relationshipLabel><!-- Service Country Configurations (InsuranceContact) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Letter format --></label>
+        <name>LetterFormat__c</name>
+        <picklistValues>
+            <masterLabel>A4</masterLabel>
+            <translation><!-- A4 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Letter</masterLabel>
+            <translation><!-- Letter --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Must match exactly the Product2 Field Set API name --></help>
+        <label><!-- Product Search Columns --></label>
+        <name>ProductSearchColumns__c</name>
+        <picklistValues>
+            <masterLabel>Product_Search_Columns_EU</masterLabel>
+            <translation><!-- Product_Search_Columns_EU --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Product_Search_Columns_US</masterLabel>
+            <translation><!-- Product_Search_Columns_US --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Product_Search_EU</masterLabel>
+            <translation><!-- Product_Search_EU --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Product_Search_US</masterLabel>
+            <translation><!-- Product_Search_US --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Second Default Account --></label>
+        <name>Second_Default_Account__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Second Default Account) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Store Developer Name --></label>
+        <name>StoreDeveloperName__c</name>
+    </fields>
+    <fields>
+        <help><!-- Enter the Developer Name of the RecordType that represents a Lidl Store. --></help>
+        <label><!-- Store Record Type --></label>
+        <name>StoreRecordTypeDeveloperName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Supplier Contact --></label>
+        <name>SupplierContact__c</name>
+        <relationshipLabel><!-- Service Country Configurations (Supplier Contact) --></relationshipLabel>
+    </fields>
+</CustomObjectTranslation>

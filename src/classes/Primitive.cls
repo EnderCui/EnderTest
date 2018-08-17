@@ -1,0 +1,10 @@
+public enum Primitive {
+    TYPE_BOOLEAN, 
+    TYPE_DATE, 
+    TYPE_DATETIME, 
+    TYPE_DOUBLE, 
+    TYPE_INTEGER, 
+    TYPE_STRING, 
+    TYPE_TIMEOFDAY,
+    TYPE_UNKNOW
+}

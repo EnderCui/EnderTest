@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Category</value>
+    </caseValues>
+    <fields>
+        <label><!-- Email Subject --></label>
+        <name>EmailSubject__c</name>
+    </fields>
+    <fields>
+        <help><!-- Filter Logic: (1 AND 2) OR 3 --></help>
+        <label><!-- Parameter Expression --></label>
+        <name>FilterLogic__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Active --></label>
+        <name>IsActive__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Parameter Expression Valid --></label>
+        <name>IsParameterExpressionValid__c</name>
+    </fields>
+    <fields>
+        <label><!-- QA Sample Text --></label>
+        <lookupFilter>
+            <errorMessage><!-- Value does not exist or does not match filter criteria. --></errorMessage>
+        </lookupFilter>
+        <name>QASampleText__c</name>
+        <relationshipLabel><!-- Categories --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- QA User --></label>
+        <name>QAUser__c</name>
+    </fields>
+    <fields>
+        <label><!-- Record Type Developer Name --></label>
+        <name>RecordTypeDeveloperName__c</name>
+        <picklistValues>
+            <masterLabel>LidlUSTypeI</masterLabel>
+            <translation><!-- LidlUSTypeI --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LidlUSTypeII</masterLabel>
+            <translation><!-- LidlUSTypeII --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LidlUSTypeIII</masterLabel>
+            <translation><!-- LidlUSTypeIII --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>LidlUSTypeV</masterLabel>
+            <translation><!-- LidlUSTypeV --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Valid Parameter Expression --></label>
+        <name>ValidParameterExpression__c</name>
+    </fields>
+    <layouts>
+        <layout>Category Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+</CustomObjectTranslation>

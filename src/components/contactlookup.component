@@ -1,0 +1,51 @@
+<apex:component id="ContactLookup">
+    <apex:attribute name="inputValue" type="String" description="The value of the input." required="true"/>
+    <apex:attribute name="inputId" type="String" description="The it of the input." required="true"/>
+
+    <apex:outputPanel styleClass="slds-form-element slds-lookup" style="display:block" >
+        <div class="slds-form-element__fullwidth slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+            <apex:inputText styleClass="slds-lookup__search-input slds-input {!inputId}" value="{!inputValue}"
+                            html-placeholder="Type to select Contact"/>
+        </div>
+        <script>
+            $("[class$='{!inputId}']").autocomplete({
+                source: function (request, response) {
+                    queryTerm = request.term;
+                    CommunicationController.searchContact(request.term, function (result, event)
+                    {
+                        if (event.type == 'exception') {
+                            alert(event.message);
+                        }
+                        else {
+                            console.log(result);
+                            movieObjects = result;
+                            response(movieObjects);
+                        }
+                    });
+                },
+                focus: function (event, ui) {
+                    $(this).val(ui.item.Fullname__c);
+
+                    return false;
+                },
+                select: function (event, ui) {
+                    $(this).val(ui.item.Fullname__c);
+                    $("[id$='email']").val(ui.item.Email);
+                    $("[id$='first-name']").val(ui.item.FirstName);
+                    $("[id$='last-name']").val(ui.item.LastName);
+                    $("[id$='street']").val(ui.item.OtherStreet);
+                    $("[id$='city']").val(ui.item.OtherCity);
+                    $("[id$='state']").val(ui.item.OtherState);
+                    $("[id$='postal-code']").val(ui.item.OtherPostalCode);
+                    $("[id$='country']").val(ui.item.OtherCountry);
+
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $('<li>')
+                        .append('<div>' + item.Fullname__c)
+                        .appendTo(ul);
+            };
+        </script>
+    </apex:outputPanel>
+</apex:component>

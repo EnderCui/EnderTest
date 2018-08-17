@@ -1,0 +1,35 @@
+<aura:component controller="MovieController">
+    <aura:handler name="init" value="{!this}" action="{!c.doGetMovie}"/>
+    
+    <aura:attribute name="results" type="List" description="电影列表"/>    
+    <aura:attribute name="count" type="Integer" default="0" description="电影记录数"/>    
+    <div>
+  
+     <table  class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th scope="col"><div class="slds-truncate">电影名</div></th>
+                    <th scope="col"><div class="slds-truncate">导演</div></th>
+                    <th scope="col"><div class="slds-truncate">主演</div></th>
+                    <th scope="col"><div class="slds-truncate">主题曲</div></th>
+                    <th scope="col"><div class="slds-truncate">上映时间</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.results}" var="item">
+                    <tr>       
+                        <td><div class="slds-truncate">{!item.Name}</div></td>
+                        <td><div class="slds-truncate">{!item.Director__c}</div></td>
+                        <td><div class="slds-truncate">{!item.ToStar__c}</div></td>
+                        <td><div class="slds-truncate">{!item.Theme__c}</div></td>
+                        <td>
+                            <lightning:formattedDateTime value="{!item.ShowTime__c}"  year="numeric" month="numeric" day="numeric"  />
+                        </td>
+                    </tr>                    
+                </aura:iteration>
+            </tbody>
+        </table>
+    <div>&nbsp;</div>
+    <span class="slds-size_small" style="float:right;">共{!v.count}条记录</span>
+   </div>
+</aura:component>

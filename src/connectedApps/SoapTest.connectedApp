@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>ender.cui@hotmail.com</contactEmail>
+    <description>Soap xml Test</description>
+    <label>SoapTest</label>
+    <oauthConfig>
+        <callbackUrl>https://dummy.org</callbackUrl>
+        <consumerKey>3MVG9d8..z.hDcPLdxfgyaJRDtag5lQ9RtHLuNgs9DvePrgR7nmlGehoQIf07.V7kUJP_025xSmXSXLSpMiLH</consumerKey>
+        <scopes>Api</scopes>
+    </oauthConfig>
+</ConnectedApp>

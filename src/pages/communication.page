@@ -1,0 +1,1101 @@
+<apex:page standardController="Case" extensions="CommunicationController" showHeader="true" sidebar="true"
+           standardStylesheets="false" id="communicationPageId" action="{!persistErrorLog}">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.LDS214, 'assets/styles/salesforce-lightning-design-system.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jquery_ui_1_12_1, 'jquery-ui-1.12.1.custom/jquery-ui.min.css')}"/>
+        <apex:includeScript value="/support/console/38.0/integration.js"/>
+
+        <apex:includeScript value="{!URLFOR($Resource.jquery_3_1_1)}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jquery_ui_1_12_1, 'jquery-ui-1.12.1.custom/jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ckeditor_4_6_1, 'ckeditor/ckeditor.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ckeditor_4_6_1, 'ckeditor/adapters/jquery.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.moment_2_17_0)}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ua_parser)}"/>
+        <script type="text/javascript" src="/canvas/sdk/js/38.0/publisher.js"></script>
+        
+        <apex:includeScript value="{!URLFOR($Resource.Utils, 'Utils.js')}" />
+
+        <script>
+        
+            var init = function () {
+                //$('#service-country').val('{!JSENCODE(serviceCountryCode)}');
+                $('#errorMessage').removeClass('displayBlock').addClass('displayNone');
+                var hiddenValue = $("[id$=bodyHiddenId]").val();
+                var editor = $("textarea[id$='editor1']");
+                if (hiddenValue) {
+                    editor.val(hiddenValue);
+                }
+            };
+
+            var initForwardQA = function () {
+                $("[id$='forwardQA-search']").autocomplete({
+                    source: function (request, response) {
+                        queryTerm = request.term;
+                        CommunicationController.searchUserQueue(request.term, function (result, event) {
+                            if (event.type == 'exception') {
+                                alert(event.message);
+                            }
+                            else {
+                                console.log(result);
+                                movieObjects = result;
+                                response(movieObjects);
+                            }
+                        });
+                    },
+                    focus: function (event, ui) {
+                        $("[id$='forwardQA-search']").val(ui.item.name);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        $("[id$='forwardQA-search']").val(ui.item.name);
+                        console.log(ui.item.Name);
+                        //categoryFilter(ui.item.Name);
+                        return false;
+                    }
+                }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $('<li>')
+                            .append('<div>' + item.name + '<span class="item-category">' + item.type + '</span></div>')
+                            .appendTo(ul);
+                };
+
+                $("[id$=orClarificationId]").on('change', function (event) {
+                    if ($(this).val() == 'Submit for Attention') {
+                        $("[id$=send-qa-button]").attr('value', 'Send');
+                    } else {
+                        $("[id$=send-qa-button]").attr('value', 'Assign and Send');
+                    }
+                });
+
+            };
+
+            function closeActionTab(isCloseTab) {
+                if (isCloseTab == "true") {
+                    console.log("close it ");
+                    closeTab();
+                }
+            }
+
+            function closeTab() {
+                if (sforce.console != null) {
+                    console.log("closeTab getEnclosingPrimaryTabId");
+
+                    //First find the ID of the current primary tab to close it
+                    sforce.console.getEnclosingPrimaryTabId(closeSubtab);
+                }
+                else if (typeof sforce != 'undefined' && sforce != null && sforce.one) {
+                    //Lightning
+                    sforce.one.back(true);
+                }
+            }
+
+            var closeSubtab = function closeSubtab(result) {
+                console.log("final getEnclosingPrimaryTabId");
+
+                //Now that we have the primary tab ID, we can close it
+                var tabId = result.id;
+                sforce.console.closeTab(tabId);
+            }
+
+            var addToDraft = function (index, itemType, id) {
+
+                var selector = '';
+                var editor = $("textarea[id$='editor1']");
+                if (itemType == 'textblock') {
+                    selector = '#textblock-content-';
+                    var newTextBlock = $(selector + index).attr('title');
+                    var existingText = editor.val();
+                    editor.val(existingText + newTextBlock);
+                    setCurrentTextBlockItem(id);
+                } else if (itemType == 'draft') {
+                    selector = '#draft-content-';
+                    editor.val($(selector + index).attr('title'));
+                    setCurrentDraftItem(id);
+                    setActiveDraftId(id);
+                } else if (itemType == 'ts') {
+                    selector = '#ts-content-';
+                    editor.val($(selector + index).attr('title'));
+                    setCurrentTextBlockItem(id);
+                }
+
+                return false;
+            }
+
+            window.onload = function () {
+                init();
+            }
+
+            $(document).ready(function () {
+
+                //SCSI-933, if an user has read-only access, then we don't show the interface and replace it with an appropriated msg.
+                // And therefore we don't need a big area.
+                if (!{!isReadOnlyAccess})
+                {
+                    Sfdc.canvas.publisher.resize( { height : "720px" } );
+                } else 
+                {
+                    Sfdc.canvas.publisher.resize( { height : "100px" } );
+                }
+
+                $("#quickcode-input").autocomplete({
+                    source: function (request, response) {
+                        queryTerm = request.term;
+                        CommunicationController.searchQuickCodes(request.term, function (result, event) {
+                            if (event.type == 'exception') {
+                                alert(event.message);
+                            }
+                            else {
+                                movieObjects = result;
+                                response(movieObjects.slice(0,2));
+                            }
+                        });
+                    },
+                    focus: function (event, ui) {
+                        $('[id$=quick-input]').val(ui.item.QuickCode__c);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        $('[id$=quickcode-input]').val(ui.item.QuickCode__c);
+
+                        quickCodesFilter(ui.item.QuickCode__c);
+                        return false;
+                    },
+                })
+                        .data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $('<li>')
+                            .append('<div>' + item.QuickCode__c + '</div>')
+                            .appendTo(ul);
+                };
+
+                //edit draft event
+                $(document).on('click', '.edit-draft', function (event) {
+                    event.stopPropagation();
+                    var closest = $(this).closest('tr');
+                    editDraft(closest.data('index'), closest.data('item-type'), closest.data('draft-id'), closest.data('draft-language'));
+
+                    return false;
+                });
+
+                //save draft event
+                $(document).on('click', '.save-draft', function (event) {
+                    event.stopPropagation();
+                    var closest = $(this).closest('tr');
+                    saveDraft(closest.data('index'), closest.data('item-type'), closest.data('draft-id'));
+
+                    return false;
+                })
+
+                //add to draft event
+                $(document).on('click', '.draft-tr', function (event) {
+                    event.stopPropagation();
+                    addToDraft($(this).data('index'), $(this).data('item-type'), $(this).data('draft-id'));
+
+                    return false;
+                });
+
+            });
+
+            //form validation
+            function validateDraftFields() {
+                if (!$('[id$=draft-name]').val() || !$('textarea[id$="editor1"]').val()) {
+                    $('#errorMessage').removeClass('displayNone').addClass('displayBlock');
+
+                    return false;
+                }
+            }
+
+            function changeValue(input, textid) {
+                $('#' + textid).value = input.value;
+
+                emailOrLetterModus(input.value);
+            }
+
+
+            /**
+            *   @description: US75, SCSI-1196. If an end user lost access on a record or if a 'Chatter Action Contact' is configured to close a tab on an action succes - 'forceClose' equals true.
+            */
+            function closeInterface(canClose, forceClose)
+            {
+                if (forceClose)
+                {
+                    serviceCloudConsoleUtils.closeEnclosingTab();
+                }
+
+                if(canClose == 'true')
+                {
+                    setTimeout(refreshPrimaryTabById(), 10000);
+                }
+                
+                return false;
+            }
+
+            function refreshPrimaryTabById()
+            {
+                sforce.console.getEnclosingPrimaryTabId(refreshTab);
+                return false;
+            }
+
+            var refreshTab = function refreshTab(result)
+            {
+                var primaryTabId = result.id;
+                console.log('Tab ID: ' + primaryTabId);
+                sforce.console.refreshPrimaryTabById(primaryTabId, true, null, true);
+            };
+
+            function setTextarea() {
+                    CKEDITOR.instances['communicationPageId:formid:editor1'].setData(document.getElementById("communicationPageId:formid:bodyHiddenId").value);
+            }
+
+            function setCurrentDraftItem(value) {
+                document.getElementById("communicationPageId:formid:selectedDraftId").value = value;
+            }
+
+            function setCurrentTextBlockItem(value) {
+                document.getElementById("communicationPageId:formid:selectedTextBlockId").value = value;
+            }
+
+            function deleteDraft(id) {
+                var result = confirm("Are you sure?");
+                if (result) {
+                    doDeleteDraft(id);
+                    console.log(id);
+                }
+
+                return false;
+            }
+
+            function editDraft(index, itemType, id, languageId) 
+            {
+
+                //addToDraft(index, itemType, id);
+
+                setEditedDraft(id, languageId);
+
+                return false;
+            }
+
+            function saveDraft(index, itemType, id) {
+                var editor = $("textarea[id$='editor1']");
+                console.log(id + ' ' + editor.val());
+                doSaveDraft(id, editor.val());
+
+                return false;
+            }
+
+            function getParameterByName(name, url) {
+                if (!url) {
+                    url = window.location.href;
+                }
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+            /**
+            *    @description For a third-lvl related actions - resets a contact after a change on the email input.
+            *    
+            */
+            function resetContact(event)
+            {
+                var target = jQuery(event.target);
+                var contactLookup = jQuery(".contact-search");
+                if (target.val() && contactLookup.val())
+                {
+                    contactLookup.val('');
+                }
+            }
+
+        </script>
+        <style>
+            .slds-grid__att-min-height {
+                height: 155px;
+            }
+
+            .slds-form-element__fullwidth {
+                width: 100% !important;
+            }
+
+            .displayNone {
+                display: none;
+            }
+
+            .displayBlock {
+                display: block;
+            }
+
+            .panel-buttons > * {
+                padding: 9px;
+                border-top: 1px solid #d8dde6;
+                border-left: 1px solid #d8dde6;
+                background-color: #f4f6f9;
+            }
+
+            .panel-buttons > input:last-child {
+                border-right: 1px solid #d8dde6;
+            }
+
+            .panel-buttons > input:hover {
+                background-color: #f4f6f9;
+            }
+
+            .input-tab-selected {
+                background-color: white;
+            }
+
+            .slds-border {
+                border: 1px solid #d8dde6;
+            }
+
+            .slds-table tr, .slds-table tr:hover {
+                border-bottom: 1px solid #d8dde6;
+                height: 46px;
+            }
+
+            .slds-grid__left-panel {
+                height: 385px;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .sceditor-button {
+                padding: 0px 0px 0px 0px !important
+            }
+
+            ;
+            .draft-edit-bar > div > input {
+                width: 96%
+            }
+
+            .draft-edited {
+                font-style: italic;
+                font-weight: bold;
+            }
+
+            .item-category {
+                float: right;
+                color: #CCCCCC
+            }
+
+            .selected {
+                background-color: #d8dde6
+            }
+
+            .slds-button-image {
+                border: 1px solid #d8dde6;
+                padding: 2px 2px 2px 2px;
+                vertical-align: middle;
+            }
+
+            .slds-button-image__selected {
+                background-color: #CCCCCC
+            }
+
+            .align-center {
+                text-align: center
+            }
+            .width-100-percent {
+                width: 100%;
+            }
+            .no-data-panel {
+                display: block;
+                width: 100%;
+                height: 100%;
+                background-color: #e0e5ee;
+                padding: 10px;
+            }
+        </style>
+      
+    </head>
+    <body>
+    <div class="slds">
+        <apex:form id="formid">
+
+            <c:actionstatus />
+            <apex:outputPanel id="pageMessages">
+                <apex:pageBlock id="errorMsgPageBlock" rendered="{!if(errorMessage != null, true, false)}"
+                                mode="maindetail">
+                    <div class="slds-notify_container">
+                        <div class="slds-theme--error slds-theme--alert-texture" role="alert">
+                            <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!errorMessage}</h2>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                </apex:pageBlock>
+                <apex:pageBlock id="infoMsgPageBlock" rendered="{!if(infoMessage != null, true, false)}">
+                    <div class="slds-notify_container">
+                        <div class="slds-theme--success slds-theme--alert-texture" role="alert">
+                            <h2 class="slds-text-heading--medium" id="prompt-heading-id">{!infoMessage}</h2>
+                            <apex:actionPoller action="{!setIsSelectedToFalse}" reRender="pageMessages" interval="5"/>
+                        </div>
+                    </div>
+                    <div style="height: 30px"></div>
+                </apex:pageBlock>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isSaveAsName && !isReadOnlyAccess}">
+                <div>
+                    <div aria-hidden="false" aria-labelledby="prompt-heading-id"
+                         aria-describedby="prompt-message-wrapper" role="alertdialog"
+                         class="slds-modal slds-modal--prompt slds-fade-in-open" style="width: 500px">
+                        <div class="slds-modal__container slds-modal--prompt" role="document"
+                             id="prompt-message-wrapper" tabindex="0">
+                            <div class="slds-modal__header slds-theme--success slds-theme--alert-texture">
+                                <h2 class="slds-text-heading--medium"
+                                    id="prompt-heading-id">{!$Label.SaveAsDocName}</h2>
+                            </div>
+                            <div class="slds-modal__content slds-p-around--medium">
+                                <apex:inputText value="{!documentName}" style="width: 100%"/>
+                            </div>
+                            <div class="slds-modal__footer slds-theme--default">
+                                <apex:commandButton action="{!create}" value="Ok"
+                                                    styleClass="slds-button slds-button--neutral"
+                                                    onComplete="closeInterface('{!canClose}')" />
+                                <apex:commandButton action="{!doCancel}" value="Cancel"
+                                                    styleClass="slds-button slds-button--neutral"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isUploadAttachment && !isReadOnlyAccess}">
+                <div>
+                    <div aria-hidden="false" aria-labelledby="prompt-heading-id"
+                         aria-describedby="prompt-message-wrapper" role="alertdialog"
+                         class="slds-modal slds-modal--prompt slds-fade-in-open" style="width: 500px">
+                        <div class="slds-modal__container slds-modal--prompt" role="document"
+                             id="prompt-message-wrapper" tabindex="0">
+                            <div class="slds-modal__header slds-theme--success slds-theme--alert-texture">
+                                <h2 class="slds-text-heading--medium"
+                                    id="prompt-heading-id">{!$Label.UploadAttachment}</h2>
+                            </div>
+                            <div class="slds-modal__content slds-p-around--medium">
+                                <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file" styleClass="width-100-percent"/>
+                            </div>
+                            <div class="slds-modal__footer slds-theme--default">
+                                <apex:commandButton action="{!upload}" value="Upload"
+                                                    styleClass="slds-button slds-button--neutral"/>
+                                <apex:commandButton action="{!doCancel}" value="Cancel"
+                                                    styleClass="slds-button slds-button--neutral"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!!isReadOnlyAccess}">
+                <div class="slds-grid slds-grid--vertical-stretch slds-wrap">
+                    <apex:outputPanel id="leftPanelId" styleClass="slds-col  slds-size--1-of-4 slds-p-left--x-small"
+                                      style="display:inline-block;">
+                        <apex:outputPanel rendered="{!if(isForwardQAModus == false && isLetterModus && isMainModus != true, true, false)}"
+                                styleClass="slds-col  slds-size--1-of-4">
+                            <div id="left-letterform-panel">
+                                <div class="slds-page-header" role="banner">
+                                    <div class="slds-media slds-media--center">
+                                        <div class="slds-media__body">
+                                            <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                               title="Sending details">Letter details</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form--horizontal slds-m-top--large">
+                                    <apex:outputPanel styleClass="slds-form-element slds-lookup" style="display:block"
+                                                      rendered="{!AND(!isLetterModus, OR(isForwardSupplierModus == true, isForwardBuyerModus == true))}">
+                                        <c:contactlookup inputId="letter-search"
+                                                         inputValue="{!defaultContact.Fullname__c}"/>
+                                    </apex:outputPanel>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.FirstName}"
+                                                            html-placeholder="First Name" Id="first-name" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.LastName}"
+                                                            html-placeholder="Last Name" Id="last-name" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.OtherStreet}"
+                                                            html-placeholder="Street" id="street" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.OtherCity}"
+                                                            html-placeholder="City" id="city" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.OtherState}"
+                                                            html-placeholder="State / Province" id="state" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.OtherPostalCode}"
+                                                            html-placeholder="Zip / Postal Code" id="postal-code" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!defaultContact.OtherCountry}"
+                                                            html-placeholder="Country" id="country" html-readonly="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!if(!isAssignment && isForwardQAModus == false && isEmailSendModus && isMainModus != true, true, false)}" styleClass="slds-col  slds-size--1-of-4">
+                            <div id="left-mailform-panel">
+                                <apex:variable value="foo" var="foo" rendered="{!AND(chatterActionConfiguration != null, NOT(ISBLANK(chatterActionConfiguration.InfoSectionLabel__c)))}" >
+                                    <div class="slds-page-header" role="banner">
+                                        <div class="slds-media slds-media--center">
+                                            <div class="slds-media__body">
+                                                <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                                   title="Sending details">
+                                                   <apex:outputField value="{!chatterActionConfiguration.InfoSectionLabel__c}" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:variable>
+                                <apex:variable value="foo" var="foo" rendered="{!OR(chatterActionConfiguration == null, ISBLANK(chatterActionConfiguration.InfoSectionLabel__c))}" >
+                                    <div class="slds-page-header" role="banner">
+                                        <div class="slds-media slds-media--center">
+                                            <div class="slds-media__body">
+                                                <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                                   title="Sending details">Email details</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:variable>
+                                <div class="slds-form--horizontal slds-m-top--x-small">
+                                    <apex:outputPanel styleClass="slds-form-element slds-lookup" style="display:block"
+                                                      rendered="{!isChatterActionContactConfigurableAction == true
+                                                              || isForwardSupplierModus == true || isForwardRDCModus == true || isForwardBuyerModus == true}">
+                                        <c:contactlookup inputValue="{!defaultContact.Fullname__c}"
+                                                         inputId="contact-search"/>
+                                    </apex:outputPanel>
+                                    <div class="slds-form-element slds-form-element__fullwidth">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <div class="slds-select_container">
+                                                <apex:selectList id="fromId" value="{!selectedFromAddress}" styleClass="slds-select" size="1">
+                                                    <apex:selectOptions value="{!fromAddresses}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!email}"
+                                                            html-placeholder="Email" Id="email"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!cc}"
+                                                            html-placeholder="CC"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-form-element__fullwidth">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!bcc}"
+                                                            html-placeholder="BCC"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-form-element__fullwidth">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <apex:inputText styleClass="slds-input" value="{!subject}"
+                                                            html-placeholder="Subject"/>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        //Look on the 'resetContact' description, please.
+                                        jQuery(document).ready(function()
+                                        {
+                                            jQuery("[id$='email']").bind("change", resetContact);
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel id="forwardQAId"
+                                          rendered="{!if(isForwardQAModus == true && isMainModus == false && isEmailSendModus == true, true, false)}"
+                                          styleClass="slds-col  slds-size--1-of-4">
+                            <div id="left-mailform-panel">
+                                <div class="slds-page-header" role="banner">
+                                    <div class="slds-media slds-media--center">
+                                        <div class="slds-media__body">
+                                            <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                               title="Sending details">Forward QA</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form--horizontal slds-m-top--x-small">
+                                    <div class="slds-form-element slds-form-element__fullwidth">
+                                        <div class="slds-form-element__control slds-form-element__fullwidth">
+                                            <div class="slds-select_container">
+                                                <apex:selectList id="orClarificationId" value="{!selectedforwardReason}"
+                                                                 styleClass="slds-select" size="1">
+                                                    <apex:actionSupport event="onchange" reRender="forwardQAId"/>
+                                                    <apex:selectOptions value="{!forwardReason}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-lookup">
+                                        <div class="slds-form-element__fullwidth slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                                            <svg class="slds-input__icon slds-icon-text-default">
+                                                <use xlink:href="{!URLFOR($Resource.LDS214, '/assets/icons/utility-sprite/svg/symbols.svg#search')}"></use>
+                                            </svg>
+                                            <apex:inputText styleClass="slds-lookup__search-input slds-input"
+                                                            value="{!forwardQADefault}"
+                                                            disabled="{!isDisableForwardQADefault}"
+                                                            html-placeholder="{!$Label.ForwardtoUserQueue}"
+                                                            id="forwardQA-search"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                initForwardQA();
+                            </script>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="thirdLevelId"
+                                          rendered="{!if(isAssignment && isMainModus == false && isEmailSendModus == true && OR(isForwardRDCModus == true, isChatterActionContactConfigurableAction == true, isForwardSupplierModus == true), true, false)}"
+                                          styleClass="slds-col  slds-size--1-of-4">
+                            <div id="left-mailform-panel">
+                                <apex:variable value="foo" var="foo" rendered="{!AND(chatterActionConfiguration != null, NOT(ISBLANK(chatterActionConfiguration.InfoSectionLabel__c)))}" >
+                                    <div class="slds-page-header" role="banner">
+                                        <div class="slds-media slds-media--center">
+                                            <div class="slds-media__body">
+                                                <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                                   title="Assign to 3rd Level">
+                                                        <apex:outputField value="{!chatterActionConfiguration.InfoSectionLabel__c}" />
+                                                   </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:variable>
+                                <apex:variable value="foo" var="foo" rendered="{!OR(chatterActionConfiguration == null, ISBLANK(chatterActionConfiguration.InfoSectionLabel__c))}" >
+                                    <div class="slds-page-header" role="banner">
+                                        <div class="slds-media slds-media--center">
+                                            <div class="slds-media__body">
+                                                <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                                   title="Assign to 3rd Level">
+                                                        Assignment Details
+                                                   </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:variable>
+                                <apex:outputPanel styleClass="slds-form--horizontal slds-m-top--x-small" style="display:block">
+                                    <c:userlookup inputValue="{!defaultOwnerName}" lookupId="{!defaultOwnerId}" chatterActionType="{!chatterActionConfiguration.Label}"/>
+                                </apex:outputPanel>
+
+                            </div>
+
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!isMainModus}" id="textBlockOutputPanelId"
+                                          styleClass="slds-col  slds-size--1-of-4">
+                            <div class="slds-col  slds-size--1-of-4 displayNone" id="left-draftform-panel">
+                                <div class="slds-page-header" role="banner">
+                                    <div class="slds-media slds-media--center">
+                                        <div class="slds-media__body">
+                                            <p class="slds-page-header__title slds-truncate slds-align-middle"
+                                               title="Draft details">Draft details</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="left-list-panel slds-table__border">
+                                <div class="panel-buttons" style="white-space:nowrap;">
+                                    <apex:commandButton id="buildingblock-buttom" image="{!URLFOR($Resource.LDSIcons, 'side_list_24.png')}"
+                                                        action="{!showTextBlocksPanel}" title="Text Block"
+                                                        styleClass="{!IF(isTextBlocksPanel, 'input-tab-selected', '')}"
+                                                        reRender="textBlockOutputPanelId, filterId"
+                                                        status="actionStatusId"/>
+                                    <apex:commandButton id="document-button" image="{!URLFOR($Resource.LDSIcons, 'overflow_24.png')}"
+                                                        action="{!showDraftsPanel}" title="Drafts"
+                                                        styleClass="{!IF(isDraftsPanel, 'input-tab-selected', '')}"
+                                                        reRender="textBlockOutputPanelId,filterId"
+                                                        status="actionStatusId"/>
+                                    <apex:commandButton id="hammer-button" image="{!URLFOR($Resource.LDSIcons, 'insert_template_24.png')}"
+                                                        action="{!showTextSamplesPanel}" title="Text Samples"
+                                                        styleClass="{!IF(isTextSamplesPanel, 'input-tab-selected', '')}"
+                                                        reRender="textBlockOutputPanelId,filterId"
+                                                        status="actionStatusId"/>
+                                </div>                                
+                                <div class=" slds-border" id="tab-scoped-list">
+                                    <apex:outputPanel rendered="{!isTextBlocksPanel}" styleClass="slds-scrollable--y ">
+                                        <div id="tab-scoped-1" role="tabpanel" aria-labelledby="textblock-list"
+                                             class="slds-grid__left-panel">
+                                            <table class="slds-table slds-table__tr-border">
+                                                <apex:variable value="{!0}" var="index"/>
+                                                <apex:repeat value="{!textBlocks}" var="textblock">
+                                                    <tr>
+                                                        <td data-label="Account Name"
+                                                            ondblclick="addToDraft({!index}, 'textblock')">
+                                                            <div class="slds-truncate" style="vertical-align: middle"
+                                                                 id="textblock-content-{!index}"
+                                                                 title="{!textblock.TextContent__c}">
+                                                                <apex:commandButton styleClass="slds-button slds-button--icon-bare"
+                                                                        onClick="return addToDraft({!index}, 'textblock', '{!textblock.Id}')"
+                                                                        image="{!$Resource.plusIcon}"/>
+                                                                    {!textblock.TextBlockName__c}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <apex:variable value="{!index + 1}" var="index"/>
+                                                </apex:repeat>
+                                            </table>
+                                            <apex:outputPanel id="no-textblocks" rendered="{!index == 0}" styleClass="no-data-panel">{!$Label.NoTextBlocks}</apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!isDraftsPanel}">
+                                        <div id="tab-scoped-2" role="tabpanel" aria-labelledby="draft-list"
+                                             class="slds-grid__left-panel">
+                                            <table class="slds-table slds-table__tr-border">
+                                                <apex:variable value="{!0}" var="index"/>
+                                                <apex:repeat value="{!draftTemplateList}" var="draft">
+
+                                                    <tr class="draft-tr {!if(activeDraftId==draft.Id, 'slds-is-selected', '')}"
+                                                        data-index="{!index}" data-draft-id="{!draft.Id}"
+                                                        data-item-type="draft" data-draft-language="{!draft.Language__c}">
+                                                        <td>
+                                                            <div class="slds-truncate {!if(editedDraft==draft.Id, 'draft-edited', '')}"
+                                                                 style="vertical-align: middle"
+                                                                 id="draft-content-{!index}"
+                                                                 title="{!draft.TextContent__c}">
+                                                                <div style="vertical-align: middle; text-align: left">{!draft.Name} </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <apex:outputPanel style="display: block; margin-bottom: 2px;text-align: right"
+                                                                    rendered="{!activeDraftId==draft.Id}">
+
+                                                                <apex:commandButton styleClass="slds-button slds-button--icon-bare edit-draft"
+                                                                        image="{!$Resource.editIcon}"
+                                                                        rendered="{!editedDraft!=draft.Id}"
+                                                                        title="Edit Draft"/>
+                                                                <apex:commandButton styleClass="slds-button slds-button--icon-bare save-draft"
+                                                                        image="{!$Resource.checkIcon}"
+                                                                        rendered="{!editedDraft==draft.Id}"
+                                                                        title="Save Draft"/>
+                                                                <div style="margin-bottom: 2px;text-align: right">
+                                                                    <apex:commandButton styleClass="slds-button slds-button--icon-bare"
+                                                                            onClick="return deleteDraft('{!draft.Id}');"
+                                                                            image="{!$Resource.deleteIcon}"
+                                                                            title="Delete Draft"/>
+                                                                </div>
+                                                            </apex:outputPanel>
+
+                                                        </td>
+                                                    </tr>
+                                                    <apex:variable value="{!index + 1}" var="index"/>
+                                                </apex:repeat>
+                                            </table>
+                                            <apex:outputPanel id="no-drafts" rendered="{!index == 0}" styleClass="no-data-panel">{!$Label.NoDrafts}</apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!isTextSamplesPanel}" styleClass="slds-scrollable--y ">
+                                        <div id="tab-scoped-3" role="tabpanel" aria-labelledby="draft-list"
+                                             class="slds-grid__left-panel">
+                                            <table class="slds-table slds-table__tr-border">
+                                                <apex:variable value="{!0}" var="index"/>
+                                                <apex:repeat value="{!textSamples}" var="ts">
+                                                    <tr class="{!if(activeTextSampleId==ts.Id, 'slds-is-selected', '')}">
+                                                        <td data-label="Text Samples"
+                                                            onClick="addToDraft({!index}, 'ts', '{!ts.Id}')">
+                                                            <div class="slds-truncate" style="vertical-align: middle"
+                                                                 id="ts-content-{!index}" title="{!ts.TextContent__c}">
+                                                                    {!ts.TextBlockName__c}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <apex:variable value="{!index + 1}" var="index"/>
+                                                </apex:repeat>
+                                            </table>
+                                            <apex:outputPanel id="no-textsamples" rendered="{!index == 0}" styleClass="no-data-panel">{!$Label.NoTextSamples}</apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="skEditorId"
+                                      styleClass="slds-col  slds-grid--min-width slds-size--3-of-4 slds-p-left--x-small"
+                                      style="display:inline-block;">
+                        <apex:outputText rendered="{!if(isDisplayPdf != true, true, false)}">
+                            <apex:inputTextarea value="{!body}" id="bodyHiddenId" style="display:none"/>
+                            <apex:inputText value="{!selectedDraftId}" id="selectedDraftId" style="display:none"/>
+                            <apex:inputText value="{!selectedTextBlockId}" id="selectedTextBlockId"
+                                            style="display:none"/>
+                            <apex:inputTextarea id="editor1"
+                                                style="margin: 0px;height: 430px;width: 100%;border: 1px solid #d8dde6;"/>
+                            <script>
+
+                                if (getParameterByName('commpage') !== 'forwardQA') {
+                                    var editor = $("textarea[id$='editor1']").ckeditor({
+                                        customConfig: '{!$Resource.CKEditor_Config}'
+                                    });
+                                }
+                                else {
+                                    var editor = $("textarea[id$='editor1']").ckeditor({
+                                        customConfig: '{!$Resource.CKEditor_Config_FQA}'
+                                    });
+                                }
+                                CKEDITOR.config.height = 358;
+                                CKEDITOR.config.removePlugins = 'resize';
+
+                                CKEDITOR.instances['communicationPageId:formid:editor1'].on('change', function (evt) {
+                                    var valueOfTextAreaOne = evt.editor.getData();
+                                    document.getElementById("communicationPageId:formid:bodyHiddenId").value = valueOfTextAreaOne;
+                                });
+
+                            </script>
+                        </apex:outputText>
+
+                    </apex:outputPanel>
+                    <apex:outputPanel id="filterId" styleClass="slds-col slds-size--1-of-4" style="display: {! IF(isMainModus == true, 'block;', 'none;')}">
+                        <div class="slds-form--stacked slds-m-top--large">
+                            <div class="slds-form-element slds-lookup">
+                                
+                            </div>
+
+                            <div class="slds-form-element slds-lookup">
+                                <div class="slds-form-element__fullwidth slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                                    <svg class="slds-input__icon slds-icon-text-default">
+                                        <use xlink:href="{!URLFOR($Resource.LDS214, '/assets/icons/utility-sprite/svg/symbols.svg#search')}"></use>
+                                    </svg>
+                                    <input id="quickcode-input" class="slds-lookup__search-input slds-input" type="text"
+                                           role="combobox" placeholder="Quick Code search" value="{!selectedQuickCode}"
+                                           onblur="quickCodesFilter(this.value)"/>
+                                    <div id="suggesstion-box"></div>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-lookup">
+                                <div class="slds-form-element__fullwidth slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                                    <svg class="slds-input__icon slds-icon-text-default">
+                                        <use xlink:href="{!URLFOR($Resource.LDS214, '/assets/icons/utility-sprite/svg/symbols.svg#search')}"></use>
+                                    </svg>
+                                    <apex:inputText styleClass="slds-lookup__search-input slds-input"
+                                                    id="contentsearch-input" html-placeholder="Content search"
+                                                    value="{!contentSearch}" disabled="{!isDraftsPanel}"/>
+                                    <script>
+                                        $('[id$=contentsearch-input]').keyup(function (event) {
+                                        contentSearchFilter($('[id$=contentsearch-input]').val());
+                                    });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="buttonsDiv"
+                                      styleClass="slds-col slds-size--3-of-4 slds-grid--min-width slds-p-left--x-small slds-m-top--large"
+                                      style="display: block">
+                        <apex:inputHidden value="{!channel}" id="RadioButtonValue"/>
+                        <apex:outputPanel styleClass="slds-grid slds-align--absolute-center align-center slds-medium-show">
+                            <apex:outputPanel rendered="{!isMainModus}">
+                                <apex:commandButton styleClass="slds-button slds-button--neutral"
+                                                    value="Upload attachment"
+                                                    status="actionStatusId" action="{!uploadAttachment}"
+                                                    rendered="{!isMainModus}" id="upload-button"/>
+                                <apex:outputPanel styleClass="slds-button-group" style="display:inline-block;"
+                                                  rendered="{!isForwardQAModus == false && !isAssignment}">
+
+                                    <apex:commandButton styleClass="{!if(isEmailSendModus, 'slds-button slds-button--brand','slds-button slds-button--neutral')}"
+                                            value="Email" action="{!emailModus}"
+                                            status="actionStatusId" rendered="{!isMainModus}" rerender="buttonsDiv" id="email-button"/>
+                                    <apex:commandButton styleClass="{!if(isLetterModus, 'slds-button slds-button--brand','slds-button slds-button--neutral')}"
+                                            value="Letter" action="{!letterModus}"
+                                            status="actionStatusId" rendered="{!isMainModus}"
+                                            style="margin-right: 20px;" rerender="buttonsDiv" id="letter-button"/>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <div class="slds-button-group" role="group" style="margin-left: 5px;display: inline;">
+                                <apex:commandButton styleClass="slds-button slds-button--neutral" value="Continue"
+                                                    action="{!doContinue}"
+                                                    reRender="leftPanelId,skEditorId,buttonsDiv,forwardQAId,pageMessages,filterId"
+                                                    status="actionStatusId" rendered="{!isMainModus}"
+                                                    oncomplete="setTextarea();" id="continue-button"/>
+                                <apex:commandButton action="{!send}"
+                                                    onComplete="closeInterface('{!canClose}', {!isTabShouldBeClosed})"
+                                                    styleClass="slds-button slds-button--brand"
+                                                    value="{!if(OR(isForwardQAModus == true, isAssignment), 'Assign and Send', 'Send')}"
+                                                    status="actionStatusId"
+                                                    rendered="{!if(isEmailSendModus && isMainModus != true, true, false)}"
+                                                    reRender="pageMessages" id="send-qa-button"/>
+                                <apex:commandButton action="{!submitForApproval}"
+                                                    onComplete="closeInterface('{!canClose}')"
+                                                    styleClass="slds-button slds-button--neutral"
+                                                    value="Submit for Approval"
+                                                    status="actionStatusId"
+                                                    rendered="{!if(isEmailSendModus && isMainModus != true && isForwardQAModus == false, true, false)}"
+                                                    reRender="pageMessages" id="send-for-approval-button"/>
+                                <apex:commandButton styleClass="slds-button slds-button--brand" value="Print"
+                                                    action="{!doPrint}" reRender="leftPanelId,skEditorId,buttonsDiv"
+                                                    status="actionStatusId"
+                                                    rendered="{!if(isLetterModus && isDisplayPdf == false && isMainModus != true, true, false)}"
+                                                    id="save-print-button" />
+                                <apex:commandButton styleClass="slds-button slds-button--brand" value="Save"
+                                                    action="{!doCreate}"
+                                                    status="actionStatusId" rendered="{!isDisplayPdf}" id="send-button" />
+                                <apex:commandButton styleClass="slds-button slds-button--neutral" value="Save as Draft"
+                                                    status="actionStatusId" action="{!saveDraft}"
+                                                    rendered="{!isMainModus}" id="save-draft-button"/>
+                                <apex:commandButton styleClass="slds-button slds-button--neutral" value="Back"
+                                                    action="{!doCancel}" disabled="{!isMainModus}"
+                                                    status="actionStatusId"
+                                                    reRender="leftPanelId,skEditorId,buttonsDiv,pageMessages,filterId"
+                                                    oncomplete="setTextarea();" id="back-button"/>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel styleClass="slds-grid slds-align--absolute-center slds-small-show-only align-center">
+                            <apex:outputPanel rendered="{!isMainModus}">
+                                <apex:commandButton styleClass="slds-button slds-button-image"
+                                                    image="{!URLFOR($Resource.commIcons,'upload_26.png')}"
+                                                    title="Upload Attachment"
+                                                    status="actionStatusId" action="{!uploadAttachment}"
+                                                    rendered="{!isMainModus}"/>
+
+                                <apex:outputPanel styleClass="slds-button-group" style="display:inline-block;"
+                                                  rendered="{!isForwardQAModus == false && !isAssignment}">
+
+                                    <apex:commandButton styleClass="slds-button slds-button-image {!if(isEmailSendModus, 'slds-button-image__selected','')}"
+                                            title="Email" action="{!emailModus}"
+                                            image="{!URLFOR($Resource.commIcons,'email_26.png')}"
+                                            status="actionStatusId" rendered="{!isMainModus}" rerender="buttonsDiv"/>
+                                    <apex:commandButton styleClass="slds-button slds-button-image {!if(isLetterModus, 'slds-button-image__selected','')}"
+                                            title="Letter" action="{!letterModus}"
+                                            image="{!URLFOR($Resource.commIcons,'letter_26.png')}"
+                                            status="actionStatusId" rendered="{!isMainModus}"
+                                            style="margin-right: 20px;" rerender="buttonsDiv"/>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <div class="slds-button-group" role="group" style="margin-left: 5px;display: inline;">
+                                <apex:commandButton styleClass="slds-button slds-button-image" title="Continue"
+                                                    image="{!URLFOR($Resource.commIcons,'continue_26.png')}"
+                                                    action="{!doContinue}"
+                                                    reRender="leftPanelId,skEditorId,buttonsDiv,forwardQAId,pageMessages,filterId"
+                                                    status="actionStatusId" rendered="{!isMainModus}"
+                                                    oncomplete="setTextarea();"/>
+                                <apex:commandButton action="{!send}"
+                                                    styleClass="slds-button slds-button-image slds-button-image__selected"
+                                                    title="{!if(OR(isForwardQAModus == true, isAssignment), 'Assign and Send', 'Send')}"
+                                                    image="{!URLFOR($Resource.commIcons,'send_26.png')}"
+                                                    status="actionStatusId"
+                                                    onComplete="closeInterface('{!canClose}', {!isTabShouldBeClosed})"
+                                                    rendered="{!if(isEmailSendModus && isMainModus != true, true, false)}"
+                                                    reRender="pageMessages"/>
+                                <apex:commandButton action="{!submitForApproval}"
+                                                    onComplete="closeInterface('{!canClose}')"
+                                                    styleClass="slds-button slds-button-image"
+                                                    title="Submit for Approval"
+                                                    status="actionStatusId"
+                                                    rendered="{!if(isEmailSendModus && isMainModus != true && isForwardQAModus == false, true, false)}"
+                                                    image="{!URLFOR($Resource.commIcons,'approval_26.png')}"
+                                                    reRender="pageMessages" />
+
+                                <apex:commandButton styleClass="slds-button slds-button-image slds-button-image__selected"
+                                        title="Print" action="{!doPrint}" reRender="leftPanelId,skEditorId,buttonsDiv"
+                                        image="{!URLFOR($Resource.commIcons,'print_26.png')}"
+                                        status="actionStatusId"
+                                        rendered="{!if(isLetterModus && isDisplayPdf == false && isMainModus != true, true, false)}"/>
+                                <apex:commandButton styleClass="slds-button slds-button-image slds-button-image__selected"
+                                        title="Save" action="{!doCreate}"
+                                        image="{!URLFOR($Resource.commIcons,'save_26.png')}"
+                                        status="actionStatusId" rendered="{!isDisplayPdf}" />
+                                <apex:commandButton styleClass="slds-button slds-button-image" title="Save as Draft"
+                                                    image="{!URLFOR($Resource.commIcons,'draft_26.png')}"
+                                                    status="actionStatusId" action="{!saveDraft}"
+                                                    rendered="{!isMainModus}"/>
+                                <apex:commandButton styleClass="slds-button slds-button-image" title="Back"
+                                                    action="{!doCancel}" disabled="{!isMainModus}"
+                                                    image="{!URLFOR($Resource.commIcons,'back_26.png')}"
+                                                    status="actionStatusId"
+                                                    reRender="leftPanelId,skEditorId,buttonsDiv,pageMessages,filterId"
+                                                    oncomplete="setTextarea();"/>
+                                
+                            </div>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel styleClass="slds-grid  slds-grid__att-min-height" style="display:block;height: 120px;margin-top: 8px;" rendered="{!isLetterModus == false}">
+                            <div class="slds-text-title">Attachments</div>
+                            <div class="slds-scrollable--y">
+                                <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-m-top--x-small">
+                                    <tbody>
+                                    <apex:repeat value="{!attachments}" var="item">
+                                        <tr>
+                                            <td class="slds-cell-shrink">
+                                                <label class="slds-checkbox">
+                                                    <apex:inputCheckbox value="{!item.isChecked}"/>
+                                                    <span class="slds-checkbox--faux"></span>
+                                                </label>
+                                            </td>
+                                            <td scope="row" data-label="Attachment file">
+                                                <div class="slds-truncate" title="Attachment file">
+                                                    <apex:outputLink value="{!URLFOR($Action.Attachment.Download, item.att.Id)}"
+                                                                     target="_blank">{!item.att.Name}</apex:outputLink>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+            </apex:outputPanel>
+
+            <apex:actionFunction action="{!setEmailOrLetterModus}" name="emailOrLetterModus" reRender="dummyDiv">
+                <apex:param name="modus" value="" assignTo="{!setCurrentModus}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setQuickCodesFilter}" name="quickCodesFilter"
+                                 reRender="textBlockOutputPanelId">
+                <apex:param name="quickCodes" value="" assignTo="{!selectedQuickCode}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setContentSearchFilter}" name="contentSearchFilter"
+                                 reRender="textBlockOutputPanelId">
+                <apex:param name="contentSearch" value="" assignTo="{!contentSearch}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setCurrentDraft}" name="setCurrentDraft">
+                <apex:param name="currentDraft" value="" assignTo="{!selectedDraftId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!deleteDraft}" name="doDeleteDraft" reRender="textBlockOutputPanelId" status="actionStatusId">
+                <apex:param name="toDeleteDraftId" value="" assignTo="{!toDeleteDraftId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setEditedDraft}" name="setEditedDraft" reRender="textBlockOutputPanelId,filterId" status="actionStatusId">
+                <apex:param name="editedDraft" value="" assignTo="{!editedDraft}"/>
+                <apex:param name="editDraftLanguage" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction action="{!doSaveDraft}" name="doSaveDraft" reRender="textBlockOutputPanelId, filterId" status="actionStatusId">
+                <apex:param name="saveDraftId" value="" assignTo="{!editedDraft}"/>
+                <apex:param name="newContent" value="" assignTo="{!editedDraft}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setActiveDraftId}" name="setActiveDraftId" reRender="textBlockOutputPanelId, filterId" status="actionStatusId">
+                <apex:param name="activeDraftId" value="" assignTo="{!activeDraftId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setActiveTextSampleId}" name="setActiveTextSampleId"
+                                 reRender="textBlockOutputPanelId">
+                <apex:param name="activeTextSampleId" value="" assignTo="{!activeTextSampleId}"/>
+            </apex:actionFunction>
+
+            <div id="dummyDiv"></div>
+        </apex:form>
+    </div>
+    </body>
+    </html>
+</apex:page>

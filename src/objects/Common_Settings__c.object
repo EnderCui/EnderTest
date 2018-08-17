@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Common settings including all flag for LIDL project</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Value__c</fullName>
+        <description>All the Key Value type for flag</description>
+        <externalId>false</externalId>
+        <label>Value</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Common Settings</label>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,60 @@
+<apex:component id="ContactLookup">
+    <apex:attribute name="inputValue" type="String" description="The value of the input." required="true" />
+    <apex:attribute name="lookupId" type="String" description="Record Id to avoid problems with records with the same name." />
+    <apex:attribute name="chatterActionType" type="String" description="In order to distinguish the type of chatter action" />
+
+    <apex:outputPanel styleClass="slds-form-element slds-lookup" style="display:block" >
+        <div class="slds-form-element__fullwidth slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+            <apex:inputHidden value="{!lookupId}" id="user-lookup-id" />
+            <apex:inputText styleClass="slds-lookup__search-input slds-input"
+                            value="{!inputValue}"
+                            html-placeholder="{!IF(chatterActionType == 'FWD', $Label.ForwardToUser, $Label.ForwardtoUserQueue)}" id="user-lookup"/>
+        </div>
+        <script>
+
+            jQuery("[id$='user-lookup']").autocomplete({
+                source: function (request, response) {
+                    queryTerm = request.term;
+                    if ('{!chatterActionType}' == 'FWD')
+                    {
+                        CommunicationController.searchUser(request.term, function (result, event) {
+                            if (event.type == 'exception') {
+                                alert(event.message);
+                            }
+                            else {
+                                movieObjects = result;
+                                response(movieObjects);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        CommunicationController.searchUserQueue(request.term, function (result, event) {
+                            if (event.type == 'exception') {
+                                alert(event.message);
+                            }
+                            else {
+                                movieObjects = result;
+                                response(movieObjects);
+                            }
+                        });
+                    }
+                },
+                focus: function (event, ui) {
+                    jQuery("[id$='user-lookup']").val(ui.item.name);
+                    return false;
+                },
+                select: function (event, ui) {
+                    debugger;
+                    jQuery("[id$='user-lookup']").val(ui.item.name);
+                    jQuery("[id$='user-lookup-id']").val(ui.item.id);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return jQuery('<li>')
+                        .append('<div>' + item.name + '<span class="item-category">' + item.type + '</span></div>')
+                        .appendTo(ul);
+            };
+        </script>
+    </apex:outputPanel>
+</apex:component>

@@ -1,0 +1,49 @@
+<apex:page controller="ProvinceCityController">
+    <apex:form id="form">
+        <apex:selectList value="{!provinceId}" id="province" multiselect="false" size="1" onchange="showCity();">
+        <apex:selectOption itemLabel="--None--"  itemValue="--None--"  rendered="{!if(provinceId==null,true,false)}" />
+            <apex:selectOptions value="{!provinceOptionList}">
+            </apex:selectOptions>
+        </apex:selectList>
+        
+        <apex:selectList value="{!cityId}" id="city" multiselect="false" size="1" onchange="showDetail();">
+            <apex:selectOption itemLabel="--None--" itemValue="--None--"  rendered="{!if(cityId==null,true,false)}" />
+        </apex:selectList>
+    </apex:form>
+    
+    <script>
+        function showCity() {
+            var provinceId = document.getElementById("{!$Component.form.province}").value;
+            console.log(provinceId);
+            Visualforce.remoting.Manager.invokeAction (
+                '{!$RemoteAction.ProvinceCityController.getCityListByProvince}', 
+                provinceId,
+                function(result, event){ 
+                    //clear options
+                    document.getElementById("{!$Component.form.city}").length = 0;
+                    if (event.status) {
+                        if(result != null && result.length > 0) {
+                            for(var i=0;i<result.length;i++) {
+                                var tempOption = new Option();
+                                tempOption.value=result[i].ID__c;
+                                tempOption.text = result[i].Name;
+                                document.getElementById("{!$Component.form.city}").add(tempOption);
+                            }
+                        } else {
+                            var tempOption = new Option();
+                            tempOption.value= '--None--';
+                            tempOption.text = '--None--';
+                            document.getElementById("{!$Component.form.city}").add(tempOption);
+                        }
+                    }
+                },
+                {escape: true}
+            );
+        }
+        
+        function showDetail() {
+            var cityId = document.getElementById("{!$Component.form.city}").value;
+            alert(cityId);
+        }
+    </script>
+</apex:page>

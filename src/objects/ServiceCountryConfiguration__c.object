@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AdminProfileId__c</fullName>
+        <description>Add comma separated profile id&apos;s</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Add comma separated profile id&apos;s</inlineHelpText>
+        <label>Admin Profile Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloseCaseTabAfterFinish__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Close Case Tab After Finish</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CommunicationCustomer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Communication Customer Sample Text</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Communication Customer Sample Text</inlineHelpText>
+        <label>Communication Customer</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>TextBlock__c.Type__c</field>
+                <operation>equals</operation>
+                <value>Sample Text</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Communication Customer)</relationshipLabel>
+        <relationshipName>CustomerServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CommunicationStore__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Communication to Store</label>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Communication to Store)</relationshipLabel>
+        <relationshipName>StoreServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CommunicationSupplierClarification__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Communication Supplier Sample Text</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Communication Supplier Sample Text</inlineHelpText>
+        <label>Communication Supplier for Clarification</label>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Communication Supplier)</relationshipLabel>
+        <relationshipName>CSupplierServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CommunicationSupplier__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Communication Supplier</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>TextBlock__c.Type__c</field>
+                <operation>equals</operation>
+                <value>Sample Text</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Communication Supplier)</relationshipLabel>
+        <relationshipName>Service_Country_Configurations4</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CommunicationSupplierforNotification__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Communication Supplier Notification Sample Text</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Communication Supplier Notification Sample Text</inlineHelpText>
+        <label>Communication Supplier for Notification</label>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Communication Supplier for Notification)</relationshipLabel>
+        <relationshipName>NSupplierServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ContactInformationMaxContactMatches__c</fullName>
+        <defaultValue>10</defaultValue>
+        <description>Max number of Contact maches compared to the input parameter. Default 10</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Max number of Contact maches compared to the input parameter. Default 10</inlineHelpText>
+        <label>Contact Information Max Contact Matches</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultAccount__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Default Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Service Country Configurations</relationshipLabel>
+        <relationshipName>Service_Country_Configurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>DefaultCaseQueueDeveloperName__c</fullName>
+        <externalId>false</externalId>
+        <label>Default Case Queue Developer Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FollowUpDefaultDueTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Follow Up Default Due Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FollowUpQueueDeveloperName__c</fullName>
+        <externalId>false</externalId>
+        <label>Follow Up Queue Developer Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ForwardBuyer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Forward Buyer Sample Text</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Forward Buyer Sample Text</inlineHelpText>
+        <label>Forward Buyer</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>TextBlock__c.Type__c</field>
+                <operation>equals</operation>
+                <value>Sample Text</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Forward Buyer)</relationshipLabel>
+        <relationshipName>BuyerServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ForwardInsurance__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Forward Insurance Sample Text</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Forward Insurance Sample Text</inlineHelpText>
+        <label>Forward Insurance</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>TextBlock__c.Type__c</field>
+                <operation>equals</operation>
+                <value>Sample Text</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Forward Insurance)</relationshipLabel>
+        <relationshipName>InsuranceServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ForwardOthers__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Forward Others</label>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Forward Others)</relationshipLabel>
+        <relationshipName>Service_Country_Configurations1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ForwardQA__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Forward QA</label>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Forward QA)</relationshipLabel>
+        <relationshipName>Service_Country_Configurations2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ForwardRDCContact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Forward RDC Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Service Country Configurations</relationshipLabel>
+        <relationshipName>Service_Country_Configurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ForwardRDC__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Forward RDC Sample Text</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Forward RDC Sample Text</inlineHelpText>
+        <label>Forward RDC</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>TextBlock__c.Type__c</field>
+                <operation>equals</operation>
+                <value>Sample Text</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>TextBlock__c</referenceTo>
+        <relationshipLabel>Service Country Configurations (Forward RDC)</relationshipLabel>
+        <relationshipName>RDCServiceCountryConfigurations</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>InsuranceContact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>InsuranceContact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Service Country Configurations (InsuranceContact)</relationshipLabel>
+        <relationshipName>Service_Country_Configurations1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>LetterFormat__c</fullName>
+        <externalId>false</externalId>
+        <label>Letter format</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Letter</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>A4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ProductSearchColumns__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Must match exactly the Product2 Field Set API name</inlineHelpText>
+        <label>Product Search Columns</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Product_Search_Columns_EU</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Product_Search_Columns_US</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Product_Search_EU</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Product_Search_US</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Second_Default_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Second Default Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Service Country Configurations (Second Default Account)</relationshipLabel>
+        <relationshipName>Service_Country_Configurations1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>StoreDeveloperName__c</fullName>
+        <externalId>false</externalId>
+        <label>Store Developer Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StoreRecordTypeDeveloperName__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the Developer Name of the RecordType that represents a Lidl Store.</inlineHelpText>
+        <label>Store Record Type</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SupplierContact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Supplier Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Service Country Configurations (Supplier Contact)</relationshipLabel>
+        <relationshipName>Service_Country_Configurations2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Service Country Configuration</label>
+    <nameField>
+        <label>BuyerServiceCountryConfigurations Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

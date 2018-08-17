@@ -1,0 +1,14 @@
+<apex:page showHeader="false">
+
+<A HREF="#" onClick="srcUp('www.baidu.com');return false">test</A>
+<A HREF="www.baidu.com">test222</A>
+<apex:includeScript value="/support/console/35.0/integration.js"/>
+
+    <apex:includeScript value="/support/console/41.0/integration.js"/>
+    <script type="text/javascript">
+        function srcUp(url) {
+            sforce.console.openPrimaryTab(null, url, true);
+        }
+    </script>    
+
+</apex:page>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Text Block Item</value>
+    </caseValues>
+    <fields>
+        <label><!-- Category --></label>
+        <name>Category__c</name>
+        <relationshipLabel><!-- Text Block Category Assignments --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Subject --></label>
+        <name>Subject__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Block Name --></label>
+        <name>TextBlockName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Block --></label>
+        <name>TextBlock__c</name>
+        <relationshipLabel><!-- Text Block Items --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Text Block Item Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+</CustomObjectTranslation>

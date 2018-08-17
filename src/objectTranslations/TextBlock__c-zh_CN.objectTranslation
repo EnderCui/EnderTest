@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Text Block</value>
+    </caseValues>
+    <fields>
+        <label><!-- Available for profiles --></label>
+        <name>AvailableForProfiles__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email Subject --></label>
+        <name>EmailSubject__c</name>
+    </fields>
+    <fields>
+        <label><!-- Quick Code --></label>
+        <name>QuickCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Service Country --></label>
+        <name>ServiceCountry__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Block Name --></label>
+        <name>TextBlockName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Text Content --></label>
+        <name>TextContent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Sample Text</masterLabel>
+            <translation><!-- Sample Text --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Text Block</masterLabel>
+            <translation><!-- Text Block --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Text Block Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label><!-- Sample Text --></label>
+        <name>SampleText</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Text Block --></label>
+        <name>TextBlock</name>
+    </recordTypes>
+</CustomObjectTranslation>

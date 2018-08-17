@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalPicklist xmlns="http://soap.sforce.com/2006/04/metadata">
+    <globalPicklistValues>
+        <fullName>DEU</fullName>
+        <default>false</default>
+    </globalPicklistValues>
+    <globalPicklistValues>
+        <fullName>USA</fullName>
+        <default>false</default>
+    </globalPicklistValues>
+    <globalPicklistValues>
+        <fullName>CHE</fullName>
+        <default>false</default>
+    </globalPicklistValues>
+    <masterLabel>Service Country</masterLabel>
+    <sorted>false</sorted>
+</GlobalPicklist>

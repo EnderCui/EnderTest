@@ -1,0 +1,6 @@
+<apex:component >
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Welcome:</h1>
+  This is Email component Demo show page.
+  <!-- End Default Content REMOVE THIS -->
+</apex:component>

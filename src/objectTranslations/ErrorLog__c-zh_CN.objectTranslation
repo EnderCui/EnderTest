@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Error Log</value>
+    </caseValues>
+    <fields>
+        <label><!-- API Method --></label>
+        <name>API_Method__c</name>
+    </fields>
+    <fields>
+        <label><!-- Code --></label>
+        <name>Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- Comment --></label>
+        <name>Comment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Error Location --></label>
+        <name>ErrorLocation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Error --></label>
+        <name>ErrorMessage__c</name>
+    </fields>
+    <fields>
+        <label><!-- Error Type --></label>
+        <name>Error_Type__c</name>
+        <picklistValues>
+            <masterLabel>Batch Log</masterLabel>
+            <translation><!-- Batch Log --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Exception</masterLabel>
+            <translation><!-- Exception --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Inbound Error</masterLabel>
+            <translation><!-- Inbound Error --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Outbound Error</masterLabel>
+            <translation><!-- Outbound Error --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Error Stack Trace --></label>
+        <name>FullStackTrace__c</name>
+    </fields>
+    <fields>
+        <label><!-- Object ID --></label>
+        <name>ObjectId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Object --></label>
+        <name>Object__c</name>
+    </fields>
+    <fields>
+        <label><!-- Objects --></label>
+        <name>Objects__c</name>
+    </fields>
+    <fields>
+        <label><!-- Originator IP Address --></label>
+        <name>Originator_IP_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Parameters Sent/Received --></label>
+        <name>Parameters_Sent_Received__c</name>
+    </fields>
+    <fields>
+        <label><!-- Response Supplied/Received --></label>
+        <name>Response_Supplied_Received__c</name>
+    </fields>
+    <fields>
+        <label><!-- Response --></label>
+        <name>Response__c</name>
+        <picklistValues>
+            <masterLabel>Fail</masterLabel>
+            <translation><!-- Fail --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Success</masterLabel>
+            <translation><!-- Success --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Session ID --></label>
+        <name>Session_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Fixed</masterLabel>
+            <translation><!-- Fixed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New</masterLabel>
+            <translation><!-- New --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
+        <relationshipLabel><!-- Error Log --></relationshipLabel>
+    </fields>
+    <recordTypes>
+        <label><!-- API Logs --></label>
+        <name>API_Logs</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Application Error --></label>
+        <name>Application_Error</name>
+    </recordTypes>
+</CustomObjectTranslation>
